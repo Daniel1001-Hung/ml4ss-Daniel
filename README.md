@@ -6,6 +6,15 @@ Instructor and maintainer: **Luyao (Sunshine) Zhang, Duke Kunshan University**.
 
 ## Start here
 
+## Week 2 · Multimodal Data and Measurement
+
+[Open the Week 2 data-descriptor and release notebook in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/01_week2_data_descriptor_release.ipynb)
+
+Choose a guided starter, curated dataset or independent source. Inspect actual data, critique one measure, validate an improvement, generate a Dataset Card/Croissant/RAI and prepare an explicitly enabled course-organization release. Three working CPU starters span music, development finance and coastal heritage. [The Measurement guide](modules/01-measurement/README.md) contains the ten-source menu, full citations, release/review workflow and execution boundaries.
+
+Weekly reflections remain individual; Canvas tools randomly generate classroom groups each day. The Week 2 reflection is due November 8, 2026, 23:00 China Standard Time, and links actual readable organization data v0.1. The single reflection PDF remains at most two A4 pages with one practiced figure. A local preview does not complete the release milestone. Instructors confirm the publication organizations separately from classroom groups.
+
+
 [Open the revised Week 1 Wednesday notebook in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/00-foundations/02_week1_research_innovation.ipynb)
 
 Wednesday Research addresses Monday's feedback on originality, empirical design and data access before the Innovation canvas. It adds a seven-resource publication-linked data catalog, three small real-data excerpts and a research-design form. See [the Foundations guide](modules/00-foundations/README.md) for the distinction between observed data, published summaries and synthetic tutorials, access conditions, provenance and the short visual reflection.
@@ -40,7 +49,7 @@ The tutorial includes motivation, philosophical and mathematical definitions, ps
 | Folder | Purpose |
 |---|---|
 | `modules/00-foundations/` | Questions, evidence, and methods. Day 1 notebook available. |
-| `modules/01-measurement/` | Future measurement tutorials. |
+| `modules/01-measurement/` | Week 2 multimodal measurement, dataset critique and data-descriptor release. |
 | `modules/02-explanation/` | Future explanation tutorials. |
 | `modules/03-prediction/` | Future prediction tutorials. |
 | `modules/04-causal-inference/` | Future causal inference tutorials. |
@@ -65,4 +74,5 @@ The revised Wednesday notebook contains 25 executable cells. The October 28 revi
 
 
 Current Week 1 reading policy: Active research literature uses the rolling window October 27 2024 to October 27 2026, in leading journals or main conference proceedings. Older classics are retained only with a verified Nobel or Turing author exception. Dataset observations, provider instructions, course policies and original-paper bibliographies are source records rather than new reading recommendations. The classroom A2 worksheet records a prediction before Colab and an observed result and revised design after it. The individual reflection is a separate PDF of at most two A4 pages, named netID_LastName_Firstname.pdf, attached to a reply on the Ed reflection post.
+
 
