@@ -8,6 +8,35 @@
 
 **Why this sequence.** Theory defines what the measure means. Practice checks a real source and one output. Research confronts the interpretation with published evidence. Innovation makes a justified change inspectable through data, documentation and independent loading. This prepares Week 3 explanation/prediction and the November 18 proposal/dataset workshop.
 
+## Shared multimodal preview before the project
+
+The public teaching example pairs **eight Cleveland Museum of Art catalogue records and CC0 artwork images** through artwork IDs. It is a convenience sample from one API retrieval, not a representative art dataset or a time series. Its artwork dates describe the works; image-capture times are not supplied in the selected fields.
+
+An **embedding** is a numerical representation. The original public CLIP ViT-B/32 model encoded the images, catalogue text and three queries. The notebook's default uses those **saved encodings** and recomputes image/catalogue similarities and their weighted combination. It does not run a live model, train one or require a GPU. Exact source hashes, original model revision `3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268`, preprocessing and vectors are in [multimodal_demo.json](multimodal_demo.json). The [recomputation script](prepare_multimodal_demo.py) regenerates the example from public originals.
+
+Before running, predict which information will help. Change **DEMO_QUERY** among the printed landscape, portrait and quantum-computer requests. Compare **DEMO_MODE** `image`, `catalogue` and `both`, and **ALPHA** between zero and one. Equal weighting is a teaching choice, not a fitted or validated optimum. Inspect the actual candidates and original catalogue links. The absent quantum-computer photograph illustrates why a first rank does not establish relevance.
+
+An **AI agent** selects tools and next steps toward a task. A **vision–language model** processes images/text; **retrieval** selects candidates; **deployment** makes the system available as a repeatable service with monitoring and permission controls. The executed `inspect_collection` preview follows a fixed read-only policy: retrieve, read the catalogue, draft an evidence record. Its sentence uses a deterministic template, not an LLM. A publish request returns `HUMAN_APPROVAL_REQUIRED` and performs no external action. Local retrieval timing excludes model encoding, network and service overhead. This is not a robot-control or production-agent benchmark.
+
+The frontier illustrations are π0.5, CoRL 2025 [35], and RiOSWorld, NeurIPS 2025 [36]. They connect data coverage with robot generalization and computer-use evaluation. Keep the two Nature papers as the shared measurement readings. **Your assessed outcome remains your proposal and dataset v0.1, with one project Figure 1.** The gallery is not an extra figure or deployment assignment. The established museum/model example does not replace the 2025–2026 project publication criterion.
+
+## What the data-release terms mean
+
+Start with this question: can another person find your files, interpret a row and know the permitted uses?
+
+| Name | Category | Practical meaning |
+|---|---|---|
+| FAIR | Guiding principles | Findable, Accessible, Interoperable, Reusable; use identifiers, access routes, shared definitions and provenance. Authorized access can be FAIR. |
+| CARE | Indigenous data-governance principles | Collective Benefit, Authority to Control, Responsibility, Ethics; preserve the Indigenous origin and actual community authority. |
+| Dataset Card | Human-readable documentation | Explain purpose, records, preparation, limitations and permitted uses. |
+| Croissant 1.1 | Machine-readable metadata format | Describe actual files, records and field meanings in JSON-LD. |
+| Croissant RAI | Responsible AI metadata extension | Record limitations, bias, sensitive information, use and social impact. |
+| Scientific Data | Peer-reviewed data journal | Publish reusable dataset descriptions and technical validation. |
+| NeurIPS 2026 E&D | Research-conference track and submission requirements | State the evaluative claim, assumptions and limits; dataset contributions need hosted data and core/minimal RAI metadata. |
+| Hugging Face | Hosting platform | Share versioned files, cards and access routes; hosting itself does not certify scientific quality. |
+
+The current NeurIPS track, formerly Datasets & Benchmarks, studies evaluation and data resources alongside model research. It provides a concrete research route for a well-supported measurement, data or evaluation contribution. Parser success and complete metadata alone do not establish validity or conference readiness. Public readability, permission to redistribute and permission for a particular application must be checked separately.
+
 ## Choose support
 
 | Route | What is supplied | What you contribute |
@@ -212,7 +241,7 @@ Initial judgments, ten-minute individual Ed reflection and handwritten exit are 
 
 ## Full references
 
-Dataset publications [1–10] are a choice menu. [11–12] are the shared Nature readings. [13–14] support teaching mechanisms. [15] attributes the older underlying Corelli source. [16–25] are the explicitly requested authoritative standards/platform requirements. [28–32] illustrate modalities, rather than substitute for project eligibility.
+Public demonstration sources [33–34] identify the original collection and model. Frontier illustrations [35–36] are optional context. Dataset publications [1–10] are a choice menu. [11–12] are the shared Nature readings. [13–14] support teaching mechanisms. [15] attributes the older underlying Corelli source. [16–25] are authoritative standards/platform requirements. [28–32] illustrate modalities, rather than substitute for project eligibility.
 
 [1] Hentschel, J.; Rammos, Y.; Neuwirth, M.; Rohrmeier, M. (2025). A corpus and a modular infrastructure for the empirical study of (an)notated music. Scientific Data, 12, 685. https://doi.org/10.1038/s41597-025-04976-z
 
@@ -278,8 +307,20 @@ Dataset publications [1–10] are a choice menu. [11–12] are the shared Nature
 
 [32] Stanford SNAP (n.d.). Social circles Facebook, network data and documentation. https://snap.stanford.edu/data/ego-Facebook.html
 
+[33] Cleveland Museum of Art. (n.d.). Open Access and Open Access API. Public-domain artwork images and catalogue data under CC0. Accessed November 1 2026. https://www.clevelandart.org/open-access ; https://openaccess-api.clevelandart.org/
+
+[34] OpenAI. (n.d.). CLIP official implementation and original model release. Established model component, not a 2026 frontier-paper claim. Model openai/clip-vit-base-patch32, revision 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268. https://github.com/openai/CLIP ; https://huggingface.co/openai/clip-vit-base-patch32
+
+[35] Black, K.; Brown, N.; Darpinian, J.; Dhabalia, K.; Driess, D.; Esmail, A.; Equi, M. R.; Finn, C.; Fusai, N.; Galliker, M. Y.; Ghosh, D.; Groom, L.; Hausman, K.; ichter, b.; Jakubczak, S.; Jones, T.; Ke, L.; LeBlanc, D.; Levine, S.; Li-Bell, A.; Mothukuri, M.; Nair, S.; Pertsch, K.; Ren, A. Z.; Shi, L. X.; Smith, L.; Springenberg, J. T.; Stachowicz, K.; Tanner, J.; Vuong, Q.; Walke, H.; Walling, A.; Wang, H.; Yu, L.; Zhilinsky, U. (2025). π0.5: a Vision-Language-Action Model with Open-World Generalization. Proceedings of the 9th Conference on Robot Learning, PMLR 305, 17–40. https://proceedings.mlr.press/v305/black25a.html
+
+[36] Yang, J.; Shao, S.; Liu, D.; Shao, J. (2025). RiOSWorld: Benchmarking the Risk of Multimodal Computer-Use Agents. Advances in Neural Information Processing Systems, 38, Main Conference Track. https://doi.org/10.52202/085713-0286
+
 ## Execution record and reuse
 
-Prepared November 1, 2026. The complete default local-preview path was executed in a fresh in-process IPython environment for each of the three live sources, including actual rows, measured data, Figure 1, saved card/Croissant, local parser and datasets reload. The default does not authenticate, stage a Hub repository or tag a release. The online validator, signed-in hosted Colab execution, live organization upload and final peer hosted reload must be performed on the actual student release; no success is claimed for those unperformed actions.
+Prepared November 1, 2026. The shared preview was recomputed from original public CLIP weights and tested for all modes and supplied queries. The project default local-preview path was executed in a fresh in-process IPython environment for each of the three live sources, including actual rows, measured data, Figure 1, saved card/Croissant, local parser and datasets reload. The default does not authenticate, stage a Hub repository or tag a release. The online validator, signed-in hosted Colab execution, live organization upload and final peer hosted reload must be performed on the actual student release; no success is claimed for those unperformed actions.
 
 Original code is MIT. Original instructional prose and original conceptual visualizations are CC BY 4.0. External datasets retain their own licenses. Keep teaching release DOCX/PDF/PPTX, submissions, private usernames and grades outside this repository.
+
+### Optional original-model recomputation
+
+Use a fresh Python environment, install `requests pillow numpy torch transformers==4.57.6` with the appropriate CPU PyTorch wheel, then run `python prepare_multimodal_demo.py --output multimodal_demo.json`. It downloads public original weights and live museum source files; it does not publish data. The model revision and preprocessing are pinned; an API refresh can change the convenience sample. For exact replay use the committed fixture and its source hashes. The default student notebook needs neither this environment nor a model download.
