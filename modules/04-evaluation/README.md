@@ -21,6 +21,29 @@
 | Balanced accuracy | Averages recall across classes. Higher is better. Each class receives equal weight in this average. |
 | Paired improvement | Compares two scores on the same test fold. Positive values favor the classifier over the class-prior baseline. |
 
+## Evaluation pseudocode and intuition
+
+A fair comparison gives each model the same test cases and the same scoring rules. Here every row takes one turn as test data. Within each fold, each method learns from the same remaining rows. The class-prior baseline supplies a simple reference point for the gain from learning features.
+
+```text
+Choose a dataset with features and observed class labels
+Create five stratified test folds and reuse them for all methods
+FOR each fold
+    Reserve its rows for testing
+    FOR each method: class prior, logistic regression and random forest
+        Start a fresh model and fit it using the other four folds
+        Fit any scaling inside the training pipeline
+        Predict labels and probabilities on the reserved fold
+        Record log loss, balanced accuracy and the number of test rows
+    END FOR
+END FOR
+For the selected metric, average the five scores for each method
+Compare each classifier with the baseline within each fold
+Plot the observed fold ranges and the paired improvements
+```
+
+Stratification keeps the class proportions similar across folds. A paired comparison subtracts two scores from the **same** test cases, so the comparison holds the test set fixed. [Stratified folds documentation](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedKFold.html)
+
 ## Code cell walkthrough
 
 ### Cell 1 · Gather tools for a comparison (`imports`)
@@ -105,9 +128,18 @@ display(results.round(3))
 | Logistic regression | 36 | 0.061 | 1.000 |
 | Random forest | 36 | 0.126 | 0.976 |
 
-### Cell 3 · Compare means and matched differences (`evaluation-gallery`)
+#### Read the dataset and per-fold table
 
-`METRIC = "log_loss"` selects the default view of the results. The code reshapes the table so each method has a score for the same five folds. For log loss, improvement is the baseline loss minus the classifier loss on that fold. In fold 1, the rounded scores give logistic regression an improvement of about `1.090 - 0.061 = 1.029`. For balanced accuracy, improvement is the classifier score minus the baseline score. Positive values favor the classifier with either metric.
+The default Wine run has **178 samples**, **13 input features** and **3 class labels**. The class counts are **59, 71 and 48**, which sum to 178. The Digits option has **1,797 rows**, **64 pixel features** and **10 labels**. `Fold` numbers identify the test splits. Wine has **35 or 36 test rows** per fold. This is the denominator for the mean log loss. Balanced accuracy uses the count within each class before averaging class recalls. The five folds times three methods produce **15 result rows**.
+
+| Metric | Statistical meaning |
+|---|---|
+| `log_loss` | The mean negative log of the probability assigned to each row's observed class. **Lower is better.** On a single row, assigning its observed class probability 0.80 gives a loss of about 0.223. Assigning it 0.20 gives about 1.609. |
+| `balanced_accuracy` | The mean recall across classes. Recall is the fraction of each observed class correctly predicted. **Higher is better.** A method that always predicts one of three classes scores about 0.333 when all three are present in the test fold. |
+
+Read across methods within the same fold. In Wine fold 1, logistic regression's log loss is **0.061** and random forest's is **0.126**, both computed on the same **36** rows. Those scores describe the probabilities the models assigned to the observed classes. The balanced accuracy column uses predicted labels to calculate average class recall. [Log loss documentation](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.log_loss.html) · [Balanced accuracy documentation](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.balanced_accuracy_score.html)
+
+### Cell 3 · Compare means and matched differences (`evaluation-gallery`)
 
 <details>
 <summary>Code from this cell</summary>
@@ -156,17 +188,27 @@ display(InlineImage(data=buffer.getvalue()))
 
 </details>
 
-| Method | Mean test log loss | Lowest fold | Highest fold |
-|---|---:|---:|---:|
-| Logistic regression | 0.063 | 0.045 | 0.099 |
-| Random forest | 0.136 | 0.111 | 0.186 |
-| Class prior | 1.086 | 1.079 | 1.090 |
-
-Panel A shows each mean with the observed minimum and maximum across folds. Those ranges describe the five test results. Panel B shows how much each classifier improves over the baseline within each fold. A policy analyst could use the same paired idea to ask whether a new model improves predictions in each held-out district.
-
 ![Default Wine evaluation gallery showing mean log loss and fold ranges plus paired improvements over the baseline](figures/week03_04_evaluation.png)
 
+#### Read the summary and both gallery panels
+
+| Method | Mean log loss | Lowest log-loss fold | Highest log-loss fold | Mean balanced accuracy |
+|---|---:|---:|---:|---:|
+| Class prior | 1.086 | 1.079 | 1.090 | 0.333 |
+| Logistic regression | 0.063 | 0.045 | 0.099 | 0.984 |
+| Random forest | 0.136 | 0.111 | 0.186 | 0.990 |
+
+Each mean gives the five fold scores equal weight. `Lowest fold` and `Highest fold` are the observed minimum and maximum, and `Matched folds` is the number of test folds supplying scores. The table above summarizes the default Wine run. Selecting the alternate metric displays the corresponding column.
+
+**Panel A** uses one dot per method for its mean and horizontal bars for its observed fold range. Training sets overlap across folds, so use the ranges to describe variation among these five scores. **Panel B** puts the fold number on the horizontal axis and the improvement over the class prior on the vertical axis. Zero marks a tie. Positive values favor the classifier. For log loss, improvement is baseline loss minus model loss. For balanced accuracy it is model score minus baseline score. Using the rounded fold 1 log losses, logistic regression's improvement is about $1.090-0.061=1.029$.
+
 **Try one change.** Set `METRIC = "balanced_accuracy"` and rerun Cell 3 to score the same predictions by another criterion. Then try `DATASET = "digits"` in Cell 2 and rerun Cells 2 and 3 to compare on a different task.
+
+## Conclusions and assumptions
+
+**What the results support.** With the fixed Wine folds, logistic regression has the lowest mean log loss and random forest has the highest mean balanced accuracy. The comparison supports different choices depending on whether you care about the probabilities assigned to the observed classes or average class-level recall.
+
+**What the interpretation assumes.** The folds need to represent the types of rows you expect to predict. Stratification balances class proportions, while a project with repeated units or time dependence may need group or time splits. Fit preprocessing inside the training fold and use the same held-out rows for each method. The score must reflect the goal and cost of errors. The five shared folds give a classroom comparison for a fixed dataset and model setup. To choose settings, reserve validation data, then use independent test evidence to assess the selected method. For a wider benchmark, justify the dataset eligibility and metrics before interpreting its ranking.
 
 **Dataset documentation.** [Wine](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_wine.html) · [Digits](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html)
 

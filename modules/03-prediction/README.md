@@ -21,6 +21,30 @@
 | False negative | The model calls No when the reference says Yes. |
 | Baseline | A simple prediction rule for comparison. Here it always calls No, the majority training label. |
 
+## Prediction pseudocode and intuition
+
+This lab learns from robot frames with recorded answers and then scores frames from a different run. An image becomes a row of pixel features. Logistic regression combines those features into a single number and converts it to a score between 0 and 1 for the **Yes** class.
+
+```text
+Read the 600 source rows and find the two target frames
+Set aside the entire target trajectory 14652
+From the other trajectories, keep completion questions with Yes or No references
+FOR each training and test image
+    Choose the full montage or the wrist crop
+    Resize to 24 by 14 pixels, flatten RGB channels and scale by 255
+END FOR
+Fit class-weighted logistic regression to the training pixels and labels
+FOR each test frame i
+    Compute its Yes score p[i]
+    IF p[i] is at least THRESHOLD, predict Yes
+    OTHERWISE, predict No
+    Compare the resulting label with the decoded reference and the always-No baseline
+END FOR
+Repeat the fit for the other camera view to draw the comparison gallery
+```
+
+The fitted model combines the pixels $x_i$ as $b+w^\top x_i$ and converts that value to the Yes score $p_i=1/(1+\exp(-(b+w^\top x_i)))$. The predicted answer $\widehat y_i$ depends on the cutoff $t$, and the observed reference $y_i$ comes from the row's own answer choices. [Logistic regression documentation](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)
+
 ## Code cell walkthrough
 
 ### Cell 1 · Set up the images and prediction tools (`setup`)
@@ -143,6 +167,17 @@ print(f"Held-out trajectory: {held_out.rsplit('_', 1)[-1]}")
 | Training labels No / Yes | 79 / 15 |
 | Held-out trajectory | 14652 |
 
+#### Read the sample and the holdout
+
+| Printed quantity | Meaning |
+|---|---|
+| 600 source rows | Image–question records fetched for the teaching slice. The selection step keeps the relevant completion questions. |
+| 94 training images across 16 trajectories | The input used to fit the classifier. Several records can come from the same robot run. |
+| 79 No and 15 Yes | The training label counts. Yes accounts for about **16.0%** of the training rows, so the majority baseline always predicts No. |
+| Held-out trajectory 14652 | The run set aside from training. The two displayed test frames both come from this run. |
+
+Resizing each image gives $24\times14\times3=1{,}008$ features. A training weight of $n/(2n_c)$ for a class with $n_c$ rows gives the rarer Yes class about 3.13 per row and the No class about 0.59 per row. These weights give each class the same total weight in fitting. [Class-weight definition](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)
+
 ### Cell 3 · Convert pixels to scores (`robot-fit`)
 
 `camera_view` selects the full camera montage (`VIEW = "all"`) or the lower-left wrist crop (`VIEW = "wrist"`). Each chosen view is resized to 24 × 14 pixels. The three color channels give 1,008 input numbers scaled between 0 and 1. The classifier learns weights from the training images and labels. Balanced class weights give the less common Yes training examples more influence per row. `predict_proba` returns scores for the test images and `THRESHOLD` converts them to labels.
@@ -218,11 +253,15 @@ display(result)
 | 14652_q29 | 0.040 | No | No | No |
 | 14652_q35 | 0.086 | No | Yes | No |
 
-At the default cutoff, q35 is a false negative because its score of 0.086 falls below 0.50. The model and baseline each match one of the two references. The two cases support error inspection. A broader performance comparison needs independent trajectories from the setting of interest.
+#### Read the scores, cutoff and reference
+
+**Compare the Yes score for each frame with the decision threshold.** With all cameras and the default cutoff of 0.50, $0.040$ for q29 and $0.086$ for q35 both fall below the cutoff. Both decisions are No. The **Reference** column is the observed label recorded by the dataset. The **Matches reference** column checks whether that label agrees with the model's decision.
+
+The result is a correct No for q29 and a **false negative** for q35, whose reference says Yes. The logistic classifier and the always-No baseline each match **1 of 2** references. Each catches **0 of 1** observed Yes cases. These fractions describe the two displayed frames.
+
+**Try the cutoff rule by hand.** A threshold of 0.21 also puts both all-view scores below the cutoff. At 0.05, q35 reaches the cutoff and switches to Yes. q29 falls below 0.05. This comparison applies different decision rules to the displayed scores.
 
 ### Cell 5 · See how the camera changes the evidence (`prediction-gallery`)
-
-Panel A shows the two test frames in the selected view. Panel B fits the other view and plots both sets of scores against the same threshold. For q35, the wrist crop raises the score from **0.086** to about **0.350**. Both scores fall below 0.50. A camera can change a score even when the reported decision stays the same.
 
 <details>
 <summary>Code from this cell</summary>
@@ -268,7 +307,22 @@ view_scores = prediction_gallery()
 
 ![Default robot prediction gallery showing both test frames, their labels, camera-view scores and the decision threshold](figures/week03_03_prediction.png)
 
+#### Read the images and score comparison
+
+| Frame | All-views Yes score | Wrist-view Yes score | Recorded reference |
+|---|---:|---:|---|
+| q29 | 0.040 | 0.037 | No |
+| q35 | 0.086 | 0.350 | Yes |
+
+**Panel A** shows the selected view and places the predicted and reference labels above each image. **Panel B** compares two fitted models on the same frames. Its horizontal axis is the Yes score. The row identifies the frame. Circles show all-view scores, squares show wrist-view scores, and the dashed line marks the current cutoff. At 0.50, the q35 points for both views lie to the left of the line. The wrist crop brings its score closer to the cutoff.
+
 **Try one change.** Set `VIEW = "wrist"` in Cell 3 and rerun Cells 3–5. Compare the images and the Yes score. To explore the decision rule separately, choose a different `THRESHOLD`. Use validation trajectories to set a cutoff for a larger evaluation.
+
+## Conclusions and assumptions
+
+**What the results support.** In this run, the camera view affects the Yes score for q35, and the default decision misses its recorded completion. The always-No baseline matches the model on these two decisions. This comparison helps identify a specific error to investigate on other runs.
+
+**What the interpretation assumes.** The image crop and downsampled pixels need to retain cues about completion. Logistic regression models the log-odds as a linear combination of those pixel features, and the labels need to apply the completion definition consistently. Scores from this weighted fit can be used as decision scores. Interpreting them as real-world completion frequencies requires a calibration check on relevant data. The two frames share a trajectory and may be correlated. For a performance estimate, choose thresholds on validation trajectories and evaluate with multiple independent test trajectories from the conditions of interest.
 
 **Transfer question.** If you were predicting crop damage from aerial images, would you hold out individual pictures, fields or seasons? What new cases would your choice represent?
 

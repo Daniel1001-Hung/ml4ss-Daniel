@@ -17,7 +17,7 @@ A research team needs to know what a recorded label means, how to describe patte
 | [03 Prediction](modules/03-prediction/README.md) | Fit a classifier using labeled images from other robot runs. Compare a score, decision, reference and baseline on held-out frames. | [Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/03-prediction/week03_03_robot_prediction.ipynb) |
 | [04 Evaluation](modules/04-evaluation/README.md) | Compare methods on shared test folds. Read how log loss and balanced accuracy answer different questions and trace one design choice in TabArena. | [Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/04-evaluation/week03_04_tabarena_evaluation.ipynb) |
 
-Each walkthrough starts with a short learning summary and explains the cells in notebook order. Read the saved examples and galleries, expand the code for any cell, and consider a question from another field before running the lab. For Wednesday's paper discussion, see the [TabArena research case](modules/04-evaluation/README.md#research-case--tabarena).
+Each walkthrough starts with a short learning summary, then traces the algorithm in pseudocode. The guide explains the statistics and plots alongside the results and closes with conclusions and assumptions. Read the saved examples and galleries, expand the code for any cell, and consider a question from another field before running the lab. For Wednesday's paper discussion, see the [TabArena research case](modules/04-evaluation/README.md#research-case--tabarena).
 
 ## Week 2 · Multimodal Data and Measurement
 

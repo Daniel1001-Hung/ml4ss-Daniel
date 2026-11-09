@@ -23,6 +23,24 @@
 | `correct_answer` | The zero-based position of the recorded answer. Position 2 means the third choice. |
 | Reference label | The decoded answer supplied by the dataset. |
 
+### Measurement pseudocode and intuition
+
+The question and the options define the measurement. Here the question asks whether the robot completed the task in the selected frame. Each image–question pair stores the chosen answer as a position in its own option list. Decoding is like reading a survey answer against the exact form the respondent saw.
+
+```text
+Load the two target image–question records by ID
+Select the records to display using FOCUS
+FOR each displayed record i
+    Read its ordered choices
+    Convert the choices from text to a list if needed
+    Read its zero-based answer position k
+    Set reference label y[i] to choices[k]
+    Display the row and highlight position k
+END FOR
+```
+
+The rule is $y_i=\mathrm{choices}_i[\mathrm{correct\_answer}_i]$. Here $i$ identifies the record and `correct_answer` gives the position $k_i$ **within that record**. Position 0 is the first choice and position 2 is the third.
+
 ### Code cell walkthrough
 
 #### Cell 1 · Prepare to read the source (`setup`)
@@ -154,6 +172,16 @@ show_figure(fig)
 | 14652_q35 | 2 | No | Cannot be determined | **Yes** | Task was not attempted | **Yes** |
 
 Both indices are 2. The third choice changes with the row, so the decoded outcome changes. Try `FOCUS = "q29"` or `FOCUS = "q35"` and rerun Cell 3. The display narrows to one frame and its reference label stays tied to that row.
+
+##### Read the numbers and highlighted table
+
+The display columns 0 through 3 label option positions. The highlighted cell shows where the lookup lands in each row. The decoded answer is a **category**, such as Yes, No, Task was not attempted or Cannot be determined. Those categories carry the meaning you would count across records. With `FOCUS = "q35"`, the display shows the single q35 row and highlights its Yes choice.
+
+### Conclusions and assumptions
+
+**What the results support.** Decode each row before comparing answers across frames or counting outcomes across forms. The two examples give one recorded No and one recorded Yes. The Prediction lab uses these recorded references as the observed labels when checking its predictions.
+
+**What the interpretation assumes.** The saved option order corresponds to the row's answer position, the index is within that list, and the recorded reference applies the completion question consistently. Review whether the image and annotation support that definition of completion. Both rows come from one robot trajectory. To estimate a completion rate, first define the population and sample suitable trajectories.
 
 **Transfer question.** A city combines reports from two service systems. Each stores a complaint status as an integer. What record-level information would you request before counting resolved cases?
 

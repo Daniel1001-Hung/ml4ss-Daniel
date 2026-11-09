@@ -19,6 +19,29 @@
 | `K` and center | `K` is the chosen number of groups. Each center is the average feature vector of its assigned requests. |
 | Projection | A compressed display of the feature vectors. Truncated SVD creates the two coordinates used for the scatterplot. |
 
+## Explanation pseudocode and intuition
+
+Think of each request as a point with one coordinate for each word in the vocabulary. TF–IDF gives a request a larger coordinate for words used in that request that are relatively uncommon across the collection. K-means groups nearby points. The center summarizes the average word-weight pattern of its members.
+
+```text
+Read 400 rows in source order
+Keep requests of 8 to 90 words that pass the text filters and remove duplicates
+Remove common English stop words and keep terms seen in at least 3 requests
+Drop terms present in more than 80 percent of the retained requests
+Convert each request to a normalized TF–IDF vector
+Choose K = 4 and set the random seed to 201
+FOR each of 12 starting configurations
+    Assign each vector to its nearest center by squared Euclidean distance
+    Replace each center with the average of its assigned vectors
+    Repeat the assignment and update until the solver stops
+END FOR
+Keep the fit with the smallest total squared distance to the assigned centers
+Summarize group sizes and center terms
+Project the vectors and centers to two dimensions and draw the gallery
+```
+
+For term $t$, scikit-learn uses $\mathrm{idf}(t)=1+\log((1+N)/(1+\mathrm{df}(t)))$ with the default smoothing. $N$ counts retained requests and $\mathrm{df}(t)$ counts requests containing that term. It multiplies the term count by this weight and scales each nonzero request vector to unit Euclidean length. During grouping, K-means reduces the sum of squared distances from requests to their assigned centers. [TF–IDF documentation](https://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting) · [K-means documentation](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
+
 ## Code cell walkthrough
 
 ### Cell 1 · Prepare the text tools (`setup`)
@@ -113,6 +136,10 @@ print(f"Fetched {len(prompt_rows)} rows; retained {len(prompt_table)} short, dis
 
 </details>
 
+#### Read the sample counts
+
+The saved run fetched **400 rows** from the public derived table and retained **222 requests**, or **55.5%** of the fetched rows, after the filters and deduplication. That denominator is the ordered teaching slice. The resulting vocabulary and cluster counts describe the retained requests. To study a wider community, define who belongs in the population and how the sample represents them.
+
 ### Cell 3 · Find groups and read their terms (`cluster-fit`)
 
 `TfidfVectorizer` builds one feature vector per request. The code excludes common English stop words and keeps terms that appear in at least 3 requests and at most 80% of the sample. K-means assigns requests to nearby centers and updates the centers. In a two-feature illustration, a request at (0.8, 0.2) has squared distance 0.02 from a center at (0.7, 0.3) and 0.72 from one at (0.2, 0.8). It joins the nearer group.
@@ -170,11 +197,20 @@ In the saved run, `K = 4`. The table and bar chart show the sizes. Each row of t
 | 2 | 22 | minute, scene, dialogue, complex, got |
 | 3 | 14 | correct, confidence, answer, rate, scale |
 
-Terms such as *write*, *story* and *movie* suggest a possible theme for cluster 1. The researcher supplies and checks that interpretation. The source's cluster IDs enter an optional overlap table **after** fitting. The fitted groups come from the request text.
+#### Read group size, top terms and overlap
+
+| Fitted cluster | Share of the 222 retained requests | Most frequent source group and overlap |
+|---:|---:|---|
+| 0 | 61.3% | Source group 22, 10 of 136 |
+| 1 | 22.5% | Source group 30, 12 of 50 |
+| 2 | 9.9% | Source group 43, 8 of 22 |
+| 3 | 6.3% | Source group 23, 8 of 14 |
+
+The bars show **counts**, so cluster 0 is the largest group in this slice. Group IDs are labels assigned by the fit. Each top-term list contains the five largest coordinates of that group's center, which are average TF–IDF weights. A possible name for cluster 1 is *story writing*, based on words such as *write*, *story* and *movie*. Inspect more requests before using that name as a research category.
+
+In the overlap table, **10 of 136** means that 10 requests in fitted cluster 0 also belong to its most frequent source group, group 22. Other members may belong to other source groups. The source groups enter this descriptive comparison after fitting. An accuracy calculation would require reference categories with agreed meanings.
 
 ### Cell 4 · Read the two views of the result (`explanation-gallery`)
-
-Panel A projects the requests and centers onto two axes. A dot is a request and a large cross marks a center. Group assignments come from the full word vectors. Panel B shows selected term weights for each center, so a darker cell shows a larger weight for that term. The gallery lets an analyst connect a possible group name to the words that support it.
 
 <details>
 <summary>Code from this cell</summary>
@@ -219,7 +255,20 @@ explanation_gallery()
 
 ![Default K=4 gallery with projected WildChat requests and a heatmap of center term weights](figures/week03_02_explanation.png)
 
+#### Read both gallery panels
+
+| Panel | What to read |
+|---|---|
+| A · Projected requests and centers | Each dot is one retained request. The color gives its cluster from the full TF–IDF vectors. The crosses are the fitted centers projected into the same display. The two axes are coordinates derived by Truncated SVD. Nearby points in the display can differ on features that the two coordinates compress. |
+| B · Selected terms at each center | Each row is a fitted center and each column is a selected term. The code combines the two leading terms from each center into one shared set of columns. The color scale shows the average TF–IDF weight of that term in the group. A larger weight highlights a candidate term for interpreting the group. |
+
 **Try one change.** Set `K = 3` or `K = 5` in Cell 3 and rerun Cells 3 and 4. Compare a group's terms and size across runs. Cluster numbers can change when the fit changes. For Ed, share one panel, the setting, your interpretation and a check that could change it.
+
+## Conclusions and assumptions
+
+**What the results support.** At $K=4$, the retained requests form groups with different sizes and word-use profiles. Those profiles suggest themes to investigate. Changing $K$ gives you a way to check whether a proposed theme persists when the partition changes.
+
+**What the interpretation assumes.** Similar word weights need to reflect the kind of similarity your question cares about. This representation emphasizes word use. Word order, context and alternative phrasing may change the meaning that a reader sees. Squared Euclidean distance favors groups that are compact around a mean in the chosen feature space. The sample order, filters, vocabulary and value of $K$ all shape the partition. To generalize a theme, check it against other relevant samples and justify its interpretation. A claim about causes would require a study design that identifies a causal relationship.
 
 **Transfer question.** If you grouped public comments about a transport proposal, how might the choice of common words to remove change the themes you report?
 
