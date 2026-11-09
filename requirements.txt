@@ -1,6 +1,8 @@
 numpy>=1.26,<3
 pandas>=2.0,<4
 matplotlib>=3.8,<4
+seaborn>=0.13,<1
+Pillow>=10,<13
 scikit-learn>=1.4,<2
 ipython>=8,<10
 openpyxl>=3.1,<4

@@ -6,6 +6,14 @@ Instructor and maintainer: **Luyao (Sunshine) Zhang, Duke Kunshan University**.
 
 ## Start here
 
+## Week 3 · Explanation and Prediction
+
+[Open the Week 3 Methods Lab in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/02-explanation/01_week3_methods_lab.ipynb)
+
+Decode two robot reference labels, use K-means to find patterns in WildChat requests, then use logistic regression to predict completion for frames from a held-out robot trajectory.
+
+Start with the defaults. Try K = 3 or 5 for the text clusters or choose the wrist camera for prediction. Rerun the changed fit and Section 4 to regenerate the visualization gallery. The lab reads public Hugging Face data over HTTPS and includes saved default outputs for inspection.
+
 ## Week 2 · Multimodal Data and Measurement
 
 [Open the Week 2 notebook in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/01_week2_data_descriptor_release.ipynb)
@@ -50,8 +58,8 @@ The tutorial includes motivation, philosophical and mathematical definitions, ps
 |---|---|
 | `modules/00-foundations/` | Questions, evidence, and methods. Day 1 notebook available. |
 | `modules/01-measurement/` | Week 2 multimodal measurement, dataset critique and data-descriptor release. |
-| `modules/02-explanation/` | Future explanation tutorials. |
-| `modules/03-prediction/` | Future prediction tutorials. |
+| `modules/02-explanation/` | Week 3 methods lab, including unlabeled text clustering. |
+| `modules/03-prediction/` | Week 3 robot completion and held-out evaluation. |
 | `modules/04-causal-inference/` | Future causal inference tutorials. |
 | `modules/05-optimization/` | Future decision and optimization tutorials. |
 | `modules/06-frontier-methods/` | Future evaluation of emerging methods. |
@@ -74,6 +82,5 @@ The revised Wednesday notebook contains 25 executable cells. The October 28 revi
 
 
 Current Week 1 reading policy: Active research literature uses the rolling window October 27 2024 to October 27 2026, in leading journals or main conference proceedings. Older classics are retained only with a verified Nobel or Turing author exception. Dataset observations, provider instructions, course policies and original-paper bibliographies are source records rather than new reading recommendations. The classroom A2 worksheet records a prediction before Colab and an observed result and revised design after it. The individual reflection is a separate PDF of at most two A4 pages, named netID_LastName_Firstname.pdf, attached to a reply on the Ed reflection post.
-
 
 
