@@ -1,3 +1,166 @@
+# Measurement · STATS 201
+
+[Week 3 Measurement](#week-3-measurement) · [Week 2 Multimodal Data and Measurement](#week-2--multimodal-data-and-measurement)
+
+## Week 3 Measurement
+
+**Executive summary.** A robot dataset stores the position of a selected answer. This lab follows two frames from the same task and shows how position 2 resolves to different reference labels. You learn to define what one record represents, translate a stored code into a usable outcome, and check the translation before counting responses or training a model. The same problem arises when survey forms or administrative systems use different codebooks.
+
+[Open 01 Measurement in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/week03_01_robot_measurement.ipynb)
+
+### Learning objectives
+
+- State the **unit of observation** and the question that defines the outcome.
+- Decode an answer using the option order attached to its own record.
+- Trace a displayed label back to the source field and explain why the check matters across forms or datasets.
+
+### Terms to know
+
+| Term | Meaning in this lab |
+|---|---|
+| Row | One image and its accompanying question, choices and stored answer. |
+| `choices` | The ordered list of answers for that row. |
+| `correct_answer` | The zero-based position of the recorded answer. Position 2 means the third choice. |
+| Reference label | The decoded answer supplied by the dataset. |
+
+### Code cell walkthrough
+
+#### Cell 1 · Prepare to read the source (`setup`)
+
+Imagine combining two survey forms that store answers as numbers. You need the original form and its option list before you can count a response. Here, `ROBOT` identifies the public Robo2VLM-1 dataset and `TARGET_IDS` selects frames `14652_q29` and `14652_q35`. The cell imports Python's JSON reader, pandas and Matplotlib. It also defines helpers for fetching rows and displaying a figure. Those names and functions are ready for Cell 2.
+
+<details>
+<summary>Code from this cell</summary>
+
+```python
+# Read and run. The data loader makes public Hugging Face requests.
+
+import json
+import time
+from io import BytesIO
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import urlopen
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from IPython.display import Image as NotebookImage, display
+
+import ast
+
+DATA_SERVER = "https://datasets-server.huggingface.co"
+ROBOT = "keplerccc/Robo2VLM-1"
+TARGET_IDS = ("14652_q29", "14652_q35")
+
+def read_url(url):
+    for attempt in range(3):
+        try:
+            with urlopen(url, timeout=25) as response:
+                return response.read()
+        except (URLError, TimeoutError) as error:
+            if isinstance(error, HTTPError) and error.code not in {429, 500, 502, 503, 504}:
+                raise RuntimeError(f"Hugging Face returned HTTP {error.code}. Rerun the data cell.") from error
+            if attempt == 2:
+                raise RuntimeError("Hugging Face is unavailable. The saved default outputs can support discussion.") from error
+            time.sleep(2 ** attempt)
+
+def page(dataset, offset=0, first=False):
+    params = {"dataset": dataset, "config": "default", "split": "train"}
+    endpoint = "first-rows" if first else "rows"
+    if not first:
+        params.update(offset=offset, length=100)
+    return json.loads(read_url(f"{DATA_SERVER}/{endpoint}?{urlencode(params)}"))["rows"]
+
+def show_figure(fig):
+    buffer = BytesIO()
+    fig.savefig(buffer, format="png", dpi=125, bbox_inches="tight")
+    plt.close(fig)
+    display(NotebookImage(data=buffer.getvalue()))
+```
+
+</details>
+
+#### Cell 2 · Match the answer to its own row (`load-robot-rows`)
+
+The code fetches the first page of the training split and finds the two target IDs. Both ask whether the robot has moved the black object from a bowl into a box. `reference_answer(row)` reads the list of choices and uses that row's stored index. When a list arrives as text, `ast.literal_eval` converts it into a Python list. Think of this as reading the codebook for each observation before interpreting the recorded number.
+
+<details>
+<summary>Code from this cell</summary>
+
+```python
+# Read and run. Each row has its own choice order.
+def reference_answer(row):
+    choices = row["choices"]
+    choices = ast.literal_eval(choices) if isinstance(choices, str) else choices
+    return choices[row["correct_answer"]]
+
+first_robot = [entry["row"] for entry in page(ROBOT, first=True)]
+targets = [next(row for row in first_robot if row["id"].endswith(key)) for key in TARGET_IDS]
+```
+
+</details>
+
+```python
+reference = choices[row["correct_answer"]]
+```
+
+#### Cell 3 · Inspect the result and change the view (`measure-fit`)
+
+The cell makes a table and highlights the selected option in each row. The saved default is `FOCUS = "both"`.
+
+<details>
+<summary>Code from this cell</summary>
+
+```python
+# Your turn. Keep the default first. Then try "q29" or "q35".
+FOCUS = "both"  # "both", "q29" or "q35"
+assert FOCUS in {"both", "q29", "q35"}
+
+visible = [row for row in targets if FOCUS == "both" or row["id"].endswith(FOCUS)]
+records = []
+for row in visible:
+    options = ast.literal_eval(row["choices"]) if isinstance(row["choices"], str) else row["choices"]
+    records.append({
+        "Frame": "_".join(row["id"].split("_")[-2:]),
+        "Stored index": row["correct_answer"],
+        **{str(i): label for i, label in enumerate(options)},
+        "Reference": reference_answer(row),
+    })
+measured = pd.DataFrame(records)
+display(measured)
+
+# The highlighted column marks the stored index in each row.
+cols = ["Frame", "0", "1", "2", "3", "Reference"]
+colors = [["#deefed" if col == str(row["Stored index"]) else "#ffffff"
+           for col in cols] for row in records]
+fig, ax = plt.subplots(figsize=(11, 1.75), layout="constrained", facecolor="#f6fbfb")
+ax.axis("off")
+t = ax.table(cellText=measured[cols].values, colLabels=cols, cellColours=colors,
+             colColours=["#d9e5ea"]*len(cols), cellLoc="center",
+             colWidths=[.12,.16,.20,.17,.20,.11], bbox=[.02,.15,.96,.66])
+t.auto_set_font_size(False)
+t.set_fontsize(9)
+for cell in t.get_celld().values():
+    cell.set_edgecolor("#c9d8df")
+ax.set_title("Robo2VLM-1  |  Decode the index within each frame", color="#102b3d", fontsize=14)
+show_figure(fig)
+```
+
+</details>
+
+| Frame | Stored index | Choice 0 | Choice 1 | Choice 2 | Choice 3 | Reference |
+|---|---:|---|---|---|---|---|
+| 14652_q29 | 2 | Yes | Task was not attempted | **No** | Cannot be determined | **No** |
+| 14652_q35 | 2 | No | Cannot be determined | **Yes** | Task was not attempted | **Yes** |
+
+Both indices are 2. The third choice changes with the row, so the decoded outcome changes. Try `FOCUS = "q29"` or `FOCUS = "q35"` and rerun Cell 3. The display narrows to one frame and its reference label stays tied to that row.
+
+**Transfer question.** A city combines reports from two service systems. Each stores a complaint status as an integer. What record-level information would you request before counting resolved cases?
+
+**Source.** The two records are from the public train split of [Robo2VLM-1](https://huggingface.co/datasets/keplerccc/Robo2VLM-1). The collection is described in [Chen et al., Robo2VLM](https://papers.neurips.cc/paper_files/paper/2025/hash/1f467c3e37abf9f86c78f44c6a27ee7c-Abstract-Datasets_and_Benchmarks_Track.html).
+
+---
+
 # Week 2 · Multimodal Data and Measurement
 
 [Open the Week 2 notebook in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/01_week2_data_descriptor_release.ipynb)

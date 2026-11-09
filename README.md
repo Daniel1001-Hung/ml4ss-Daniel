@@ -8,14 +8,16 @@ Instructor and maintainer: **Luyao (Sunshine) Zhang, Duke Kunshan University**.
 
 ## Week 3 · Explanation and Prediction
 
-| Activity | Open the lab |
-|---|---|
-| [01 · Measurement](modules/01-measurement/) | [Measurement in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/week03_01_robot_measurement.ipynb) |
-| [02 · Explanation](modules/02-explanation/) | [Explanation in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/02-explanation/week03_02_unsupervised_explanation.ipynb) |
-| [03 · Prediction](modules/03-prediction/) | [Prediction in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/03-prediction/week03_03_robot_prediction.ipynb) |
-| [04 · Evaluation](modules/04-evaluation/) | [Evaluation in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/04-evaluation/week03_04_tabarena_evaluation.ipynb) |
+A research team needs to know what a recorded label means, how to describe patterns, how to predict outcomes for new cases and how to compare competing methods. These four labs follow those decisions from robot observations and text requests to a benchmark comparison.
 
-Start with the defaults and change one setting in the lab you are using. Explanation and Prediction each generate a two-panel gallery. For Wednesday, use the [TabArena case guide](modules/04-evaluation/README.md) and the Evaluation Colab to compare prediction methods on shared test folds.
+| Read the walkthrough | What you will learn | Run the lab |
+|---|---|---|
+| [01 Measurement](modules/01-measurement/README.md#week-3-measurement) | Decode a stored answer in its own record. Use two robot frames to see why position 2 can resolve to different reference labels. | [Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/week03_01_robot_measurement.ipynb) |
+| [02 Explanation](modules/02-explanation/README.md) | Turn text into features, group similar requests and judge a proposed theme from cluster sizes and center terms. | [Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/02-explanation/week03_02_unsupervised_explanation.ipynb) |
+| [03 Prediction](modules/03-prediction/README.md) | Fit a classifier using labeled images from other robot runs. Compare a score, decision, reference and baseline on held-out frames. | [Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/03-prediction/week03_03_robot_prediction.ipynb) |
+| [04 Evaluation](modules/04-evaluation/README.md) | Compare methods on shared test folds. Read how log loss and balanced accuracy answer different questions and trace one design choice in TabArena. | [Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/04-evaluation/week03_04_tabarena_evaluation.ipynb) |
+
+Each walkthrough starts with a short learning summary and explains the cells in notebook order. Read the saved examples and galleries, expand the code for any cell, and consider a question from another field before running the lab. For Wednesday's paper discussion, see the [TabArena research case](modules/04-evaluation/README.md#research-case--tabarena).
 
 ## Week 2 · Multimodal Data and Measurement
 
