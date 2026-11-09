@@ -8,11 +8,14 @@ Instructor and maintainer: **Luyao (Sunshine) Zhang, Duke Kunshan University**.
 
 ## Week 3 · Explanation and Prediction
 
-[Open the Week 3 Methods Lab in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/02-explanation/01_week3_methods_lab.ipynb)
+| Activity | Open the lab |
+|---|---|
+| [Measurement](modules/01-measurement/) | [Measurement in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/02_week3_robot_measurement.ipynb) |
+| [Explanation](modules/02-explanation/) | [Explanation in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/02-explanation/02_week3_unsupervised_explanation.ipynb) |
+| [Prediction](modules/03-prediction/) | [Prediction in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/03-prediction/01_week3_robot_prediction.ipynb) |
+| [Evaluation](modules/07-evaluation/) | [TabArena reading and comparison activity](modules/07-evaluation/README.md) |
 
-Decode two robot reference labels, use K-means to find patterns in WildChat requests, then use logistic regression to predict completion for frames from a held-out robot trajectory.
-
-Start with the defaults. Try K = 3 or 5 for the text clusters or choose the wrist camera for prediction. Rerun the changed fit and Section 4 to regenerate the visualization gallery. The lab reads public Hugging Face data over HTTPS and includes saved default outputs for inspection.
+Start with the defaults and change one setting in your chosen Colab. The Explanation and Prediction labs each generate a two-panel gallery. Read TabArena on Wednesday to see how a benchmark evaluates supervised prediction methods.
 
 ## Week 2 · Multimodal Data and Measurement
 
@@ -63,6 +66,7 @@ The tutorial includes motivation, philosophical and mathematical definitions, ps
 | `modules/04-causal-inference/` | Future causal inference tutorials. |
 | `modules/05-optimization/` | Future decision and optimization tutorials. |
 | `modules/06-frontier-methods/` | Future evaluation of emerging methods. |
+| `modules/07-evaluation/` | Week 3 TabArena case on evaluating prediction methods. |
 
 `collaborative-learning/` reserves notebook locations for think-pair-share, workshops, symposia, exhibitions, peer review, reflection activities, and certificates. These directories are structural placeholders, not claims that those tutorials are released.
 
@@ -82,5 +86,4 @@ The revised Wednesday notebook contains 25 executable cells. The October 28 revi
 
 
 Current Week 1 reading policy: Active research literature uses the rolling window October 27 2024 to October 27 2026, in leading journals or main conference proceedings. Older classics are retained only with a verified Nobel or Turing author exception. Dataset observations, provider instructions, course policies and original-paper bibliographies are source records rather than new reading recommendations. The classroom A2 worksheet records a prediction before Colab and an observed result and revised design after it. The individual reflection is a separate PDF of at most two A4 pages, named netID_LastName_Firstname.pdf, attached to a reply on the Ed reflection post.
-
 
