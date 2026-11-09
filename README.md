@@ -10,12 +10,12 @@ Instructor and maintainer: **Luyao (Sunshine) Zhang, Duke Kunshan University**.
 
 | Activity | Open the lab |
 |---|---|
-| [Measurement](modules/01-measurement/) | [Measurement in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/02_week3_robot_measurement.ipynb) |
-| [Explanation](modules/02-explanation/) | [Explanation in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/02-explanation/02_week3_unsupervised_explanation.ipynb) |
-| [Prediction](modules/03-prediction/) | [Prediction in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/03-prediction/01_week3_robot_prediction.ipynb) |
-| [Evaluation](modules/07-evaluation/) | [TabArena reading and comparison activity](modules/07-evaluation/README.md) |
+| [01 · Measurement](modules/01-measurement/) | [Measurement in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/01-measurement/week03_01_robot_measurement.ipynb) |
+| [02 · Explanation](modules/02-explanation/) | [Explanation in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/02-explanation/week03_02_unsupervised_explanation.ipynb) |
+| [03 · Prediction](modules/03-prediction/) | [Prediction in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/03-prediction/week03_03_robot_prediction.ipynb) |
+| [04 · Evaluation](modules/04-evaluation/) | [Evaluation in Colab](https://colab.research.google.com/github/sunshineluyao/ml4ss/blob/main/modules/04-evaluation/week03_04_tabarena_evaluation.ipynb) |
 
-Start with the defaults and change one setting in your chosen Colab. The Explanation and Prediction labs each generate a two-panel gallery. Read TabArena on Wednesday to see how a benchmark evaluates supervised prediction methods.
+Start with the defaults and change one setting in the lab you are using. Explanation and Prediction each generate a two-panel gallery. For Wednesday, use the [TabArena case guide](modules/04-evaluation/README.md) and the Evaluation Colab to compare prediction methods on shared test folds.
 
 ## Week 2 · Multimodal Data and Measurement
 
@@ -63,10 +63,10 @@ The tutorial includes motivation, philosophical and mathematical definitions, ps
 | `modules/01-measurement/` | Week 2 multimodal measurement, dataset critique and data-descriptor release. |
 | `modules/02-explanation/` | Week 3 methods lab, including unlabeled text clustering. |
 | `modules/03-prediction/` | Week 3 robot completion and held-out evaluation. |
-| `modules/04-causal-inference/` | Future causal inference tutorials. |
-| `modules/05-optimization/` | Future decision and optimization tutorials. |
-| `modules/06-frontier-methods/` | Future evaluation of emerging methods. |
-| `modules/07-evaluation/` | Week 3 TabArena case on evaluating prediction methods. |
+| `modules/04-evaluation/` | Week 3 TabArena case and standalone Colab for evaluating prediction methods. |
+| `modules/05-causal-inference/` | Future causal inference tutorials. |
+| `modules/06-optimization/` | Future decision and optimization tutorials. |
+| `modules/07-frontier-methods/` | Future evaluation of emerging methods. |
 
 `collaborative-learning/` reserves notebook locations for think-pair-share, workshops, symposia, exhibitions, peer review, reflection activities, and certificates. These directories are structural placeholders, not claims that those tutorials are released.
 
